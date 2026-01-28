@@ -18,6 +18,11 @@ public class PlayerMovement2D : MonoBehaviour
     public float moveSpeed = 7f; 
     public float jumpForce = 12f;
 
+    // Makes jump more comfartable
+    [Header("Jump Assist")]
+    public float coyoteTime = 0.12f;
+    public float jumpBufferTime = 0.12f;
+
     [Header("Dash")]
     public float dashSpeed = 18f;
     public float dashDuration = 0.15f;
@@ -26,11 +31,17 @@ public class PlayerMovement2D : MonoBehaviour
     [Header("Double Jump")]
     public float secondJumpStaminaMultiplier = 2f;
 
+    [Header("Mask Modifiers")]
+    public float dashMoveSpeedMultiplier = 1.25f;
+    public float phaseMoveSpeedMultiplier = 0.75f;
+    public float doubleJumpJumpForceMultiplier = 1.10f;
+
+
     [Header("Stamina")]
     public float maxStamina = 100f;
     public float dashStaminaCost = 20f;
-    public float staminaRegenPerSecond = 5f;
-    public float staminaRegenDelay = 1f;
+    public float staminaRegenPerSecond = 10f;
+    public float staminaRegenDelay = 0.5f;
 
     [Header("Ability Unlocks")]
     public bool dashUnlocked = false;
@@ -76,7 +87,14 @@ public class PlayerMovement2D : MonoBehaviour
     float dashTime;
     float lastDashTime;
 
+    float baseMoveSpeed;
+    float baseJumpForce;
+
     float regenBlockedUntilTime;
+
+    float coyoteTimer;
+    float jumpBufferTimer;
+
 
     // (On Start)
     // - Gets Rigidbody component
@@ -94,7 +112,43 @@ public class PlayerMovement2D : MonoBehaviour
         // Force both abilities OFF at start
         ApplyRevealEquippedState(false);
         ApplyPhaseEquippedState(false);
+
+        baseMoveSpeed = moveSpeed;
+        baseJumpForce = jumpForce;
     }
+
+    float CurrentMoveSpeed
+    {
+        get
+        {
+            float speed = baseMoveSpeed;
+
+            // faster with dash mask
+            if (currentAbility == AbilityMode.Dash)
+                speed *= dashMoveSpeedMultiplier;
+
+            // slower with phase walls
+            if (currentAbility == AbilityMode.PhaseWalls)
+                speed *= phaseMoveSpeedMultiplier;
+
+            return speed;
+        }
+    }
+
+    float CurrentJumpForce
+    {
+        get
+        {
+            float jf = baseJumpForce;
+
+            // higher jump with jump mask
+            if (currentAbility == AbilityMode.DoubleJump)
+                jf *= doubleJumpJumpForceMultiplier;
+
+            return jf;
+        }
+    }
+
 
     // (Every Frame)
     // Check if player switched abilities
@@ -110,6 +164,7 @@ public class PlayerMovement2D : MonoBehaviour
         DrainStaminaWhilePhasing();
 
         RegenerateStamina();
+        UpdateJumpAssistTimers();
         Jump();
         HandleDash();
     }
@@ -118,7 +173,7 @@ public class PlayerMovement2D : MonoBehaviour
     void FixedUpdate()
     {
         if (isDashing) return;
-        rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
+        rb.linearVelocity = new Vector2(moveInput * CurrentMoveSpeed, rb.linearVelocity.y);
     }
 
     // Input Handlers
@@ -150,17 +205,25 @@ public class PlayerMovement2D : MonoBehaviour
     void HandleAbilitySwitch()
     {
         if (Keyboard.current.digit1Key.wasPressedThisFrame && dashUnlocked)
-            SwitchAbility(AbilityMode.Dash);
+            ToggleAbility(AbilityMode.Dash);
 
         if (Keyboard.current.digit2Key.wasPressedThisFrame && doubleJumpUnlocked)
-            SwitchAbility(AbilityMode.DoubleJump);
+            ToggleAbility(AbilityMode.DoubleJump);
 
         if (Keyboard.current.digit3Key.wasPressedThisFrame && revealPlatformsUnlocked)
-            SwitchAbility(AbilityMode.RevealPlatforms);
+            ToggleAbility(AbilityMode.RevealPlatforms);
 
         if (Keyboard.current.digit4Key.wasPressedThisFrame && phaseWallsUnlocked)
-            SwitchAbility(AbilityMode.PhaseWalls);
+            ToggleAbility(AbilityMode.PhaseWalls);
     }
+
+    void ToggleAbility(AbilityMode ability)
+    {
+        // press again - remove mask
+        if (currentAbility == ability) SwitchAbility(AbilityMode.None);
+        else SwitchAbility(ability);
+    }
+
 
     // Switches current ability and applies/removes equipped ability states as needed
     void SwitchAbility(AbilityMode newAbility)
@@ -182,6 +245,11 @@ public class PlayerMovement2D : MonoBehaviour
 
         if (currentAbility == AbilityMode.PhaseWalls)
             ApplyPhaseEquippedState(true);
+
+        // Dash mask restriction: can't move left while Dash is equipped
+        canMoveLeft = (currentAbility != AbilityMode.Dash);
+        if (!canMoveLeft && moveInput < 0f)
+            moveInput = 0f;
     }
 
     // Applies the equipped state for *Reveal Platforms* ability
@@ -314,56 +382,98 @@ public class PlayerMovement2D : MonoBehaviour
 
     // Jump Handling
     void Jump()
-    {   
-        // Only proceed if jump key was pressed and not dashing
-        // If dashing, ignore jump input
-        if (!Keyboard.current.spaceKey.wasPressedThisFrame || isDashing)
-            return;
+    {
+        // Cant jump durinig dash
+        if (isDashing) return;
 
-        // Normal jump
-        if (isGrounded)
-        {   
-            // If grounded, set vertical velocity to jump force
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-            // Return stops the function so it doesn't try to double jump immediately
+        // If there is no pressed jump in the buffer, we do nothing.
+        if (jumpBufferTimer <= 0f) return;
+
+        bool canGroundJump = isGrounded || coyoteTimer > 0f;
+
+        // Ground / Coyote jump
+        if (canGroundJump)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, CurrentJumpForce);
+
+            // Kill the buffer and the coyote to prevent repetitions
+            jumpBufferTimer = 0f;
+            coyoteTimer = 0f;
+
             return;
         }
 
-        // Double jump only if ability equipped and not used yet
+        // Double jump (if ccannot do basic jump)
         if (currentAbility == AbilityMode.DoubleJump && !hasUsedDoubleJump)
         {
-            // Calculate stamina cost for second jump
             float secondJumpCost = dashStaminaCost * secondJumpStaminaMultiplier;
-            // If not enough stamina, return
             if (stamina < secondJumpCost) return;
 
-            // Deduct stamina cost
             stamina -= secondJumpCost;
-            // Block stamina regen as usual
             BlockStaminaRegen();
-            // Mark double jump as used
             hasUsedDoubleJump = true;
 
-            // Apply vertical jump force again
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, CurrentJumpForce);
+
+            // kill buffer
+            jumpBufferTimer = 0f;
         }
     }
+
 
     // Ground Check
+    [SerializeField] private float groundNormalThreshold = 0.6f;
+
     void OnCollisionEnter2D(Collision2D collision)
     {
-        // If colliding with ground, mark as grounded and reset double jump
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = true;
-            hasUsedDoubleJump = false;
-        }
+        if (!collision.gameObject.CompareTag("Ground")) return;
+        EvaluateGroundedFromCollision(collision);
     }
 
-    // Marks player as not grounded when leaving ground
+    void OnCollisionStay2D(Collision2D collision)
+    {
+        if (!collision.gameObject.CompareTag("Ground")) return;
+        EvaluateGroundedFromCollision(collision);
+    }
+
     void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
-            isGrounded = false;
+        if (!collision.gameObject.CompareTag("Ground")) return;
+        isGrounded = false;
     }
+
+    void EvaluateGroundedFromCollision(Collision2D collision)
+    {
+        // We consider it grounded only if there is contact "below"
+        for (int i = 0; i < collision.contactCount; i++)
+        {
+            var n = collision.GetContact(i).normal;
+            if (n.y > groundNormalThreshold)
+            {
+                isGrounded = true;
+                hasUsedDoubleJump = false;
+                return;
+            }
+        }
+
+        // If there are contacts, but all the side/top ones are not grounded
+        isGrounded = false;
+    }
+
+
+    void UpdateJumpAssistTimers()
+    {
+        // Jump Buffer: remember pressing
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+            jumpBufferTimer = jumpBufferTime;
+        else
+            jumpBufferTimer -= Time.deltaTime;
+
+        // Coyote
+        if (isGrounded)
+            coyoteTimer = coyoteTime;
+        else
+            coyoteTimer -= Time.deltaTime;
+    }
+
 }
