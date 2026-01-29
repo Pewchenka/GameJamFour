@@ -1,36 +1,87 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RevealPlatformsAbility : MonoBehaviour
 {
-    // Whether the ability has been unlocked
-    // If not unlocked, ability cannot be equipped
+    [Header("State")]
     public bool unlocked = false;
 
-    // Array of targets to reveal platforms, each platform needs a RevealPlatformTarget script on it so it knows to enable/disable renderer and collider (hiding/showing the object and making it solid/passable)
+    [Header("Target Filter")]
+    [Tooltip("Only RevealPlatformTarget objects on these layers will be affected.")]
+    [SerializeField] private LayerMask targetLayers;
+
+    [Tooltip("Re-scan on scene load (useful because player is persistent).")]
+    [SerializeField] private bool rescanOnSceneLoad = true;
+
     public RevealPlatformTarget[] targets;
 
-    // On Awake, automatically find all objects that have RevealPlatformTarget script on them and stores them in "targets"
+    private bool isEquipped;
+
     void Awake()
     {
-        if (targets == null || targets.Length == 0)
-            targets = FindObjectsByType<RevealPlatformTarget>(FindObjectsSortMode.None);
+        ScanTargets();
+        SetEquipped(false);
 
-        // Force the ability off on start
+        if (rescanOnSceneLoad)
+            SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
         SetEquipped(false);
     }
 
-    // This function is called by PlayerMovement2D when ability 3 is equipped/unequipped
+    void OnDisable() => SetEquipped(false);
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ScanTargets();
+
+        // if mask veared use to this scene
+        if (isEquipped)
+            SetEquipped(true);
+    }
+
+    [ContextMenu("Scan Targets Now")]
+    public void ScanTargets()
+    {
+        var all = FindObjectsByType<RevealPlatformTarget>(FindObjectsSortMode.None);
+
+        if (targetLayers.value == 0)
+        {
+            targets = all;
+            return;
+        }
+
+        System.Collections.Generic.List<RevealPlatformTarget> filtered = new();
+        for (int i = 0; i < all.Length; i++)
+        {
+            var t = all[i];
+            if (t == null) continue;
+
+            int layerBit = 1 << t.gameObject.layer;
+            if ((targetLayers.value & layerBit) != 0)
+                filtered.Add(t);
+        }
+
+        targets = filtered.ToArray();
+    }
+
+    // Called by PlayerMovement2D when ability 3 is equipped/unequipped
     public void SetEquipped(bool equipped)
     {
-        // If ability not unlocked, force equipped to false
+        isEquipped = equipped;
+
         if (!unlocked) equipped = false;
+        if (targets == null) return;
 
-        foreach (var t  in targets)
+        for (int i = 0; i < targets.Length; i++)
         {
-            // If individual target is not null, apply the on/off state
-            if (t != null)
-                t.ApplyState(equipped, equipped);
+            var t = targets[i];
+            if (t == null) continue;
 
+            t.ApplyState(equipped, equipped); // visible + solid
         }
     }
 }

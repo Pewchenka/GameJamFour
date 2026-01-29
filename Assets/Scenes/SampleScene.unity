@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 153951975}
   - component: {fileID: 153951974}
   - component: {fileID: 153951973}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Square (2)
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -154,6 +154,8 @@ MonoBehaviour:
   targetCollider: {fileID: 153951974}
   startHidden: 1
   startSolid: 0
+  hiddenAlpha: 0.25
+  hiddenIsSolid: 0
 --- !u!61 &153951974
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -250,7 +252,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.6698113, g: 0.24959949, b: 0.64826244, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

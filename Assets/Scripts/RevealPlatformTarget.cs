@@ -2,37 +2,71 @@ using UnityEngine;
 
 public class RevealPlatformTarget : MonoBehaviour
 {
-    // Renderer and Collider2D set to public so you can enable/disable visibility and solidity
     public Renderer targetRenderer;
     public Collider2D targetCollider;
 
-    // Setting the start state of the platform to hidden and non-solid by default
     [Header("Start State")]
-    public bool startHidden = true;  
+    public bool startHidden = true;
     public bool startSolid = false;
+
+    [Header("Hidden Visual")]
+    [Range(0f, 1f)]
+    public float hiddenAlpha = 0.25f; // hiden 
+    public bool hiddenIsSolid = false;
+
+    Color originalColor;
+    bool hasColor;
 
     void Awake()
     {
-        // Auto-assign renderer and collider if not set in inspector
         if (targetRenderer == null)
             targetRenderer = GetComponent<Renderer>();
 
         if (targetCollider == null)
             targetCollider = GetComponent<Collider2D>();
 
-        // Apply the start state
-        ApplyState(!startHidden, startSolid);
+        if (targetRenderer != null && targetRenderer.material.HasProperty("_Color"))
+        {
+            originalColor = targetRenderer.material.color;
+            hasColor = true;
+        }
+
+        ApplyHiddenState(startHidden);
     }
 
-    // Function to apply visibility and solidity state
-    public void ApplyState(bool visible, bool solid)
+    public void ApplyState(bool revealed, bool solid)
     {
-        // Set renderer visibility
-        if (targetRenderer != null)
-            targetRenderer.enabled = visible;
+        if (revealed)
+            ApplyRevealedState(solid);
+        else
+            ApplyHiddenState(true);
+    }
 
-        // Set collider solidity
+    void ApplyRevealedState(bool solid)
+    {
+        if (targetRenderer != null && hasColor)
+        {
+            Color c = originalColor;
+            c.a = 1f;
+            targetRenderer.material.color = c;
+            targetRenderer.enabled = true;
+        }
+
         if (targetCollider != null)
             targetCollider.isTrigger = !solid;
+    }
+
+    void ApplyHiddenState(bool hidden)
+    {
+        if (targetRenderer != null && hasColor)
+        {
+            Color c = originalColor;
+            c.a = hiddenAlpha;
+            targetRenderer.material.color = c;
+            targetRenderer.enabled = true; // DONT TURN OFF Renderer
+        }
+
+        if (targetCollider != null)
+            targetCollider.isTrigger = !hiddenIsSolid;
     }
 }
