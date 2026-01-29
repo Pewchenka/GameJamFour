@@ -905,6 +905,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhaseWallsAbility
   unlocked: 0
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  rescanOnSceneLoad: 1
   targets:
   - {fileID: 0}
 --- !u!114 &3605958674434528949

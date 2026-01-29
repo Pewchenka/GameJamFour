@@ -1,47 +1,89 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PhaseWallsAbility : MonoBehaviour
 {
-    // Whether the ability has been unlocked
+    [Header("State")]
     public bool unlocked = false;
 
-    // Array of targets to phase through walls, each wall needs a PhaseWallTarget script on it so it knows to enable/disable collider (making it solid/passable)
+    [Header("Target Filter")]
+    [Tooltip("Only PhaseWallTarget objects on these layers will be affected.")]
+    [SerializeField] private LayerMask targetLayers;
+
+    [Tooltip("Re-scan scene on load (useful if targets differ per level).")]
+    [SerializeField] private bool rescanOnSceneLoad = true;
+
     public PhaseWallTarget[] targets;
+
+    private bool isEquipped;
 
     void Awake()
     {
-        // Auto-find all PhaseWallTarget objects in the scene if none assigned
-        if (targets == null || targets.Length == 0)
-            targets = FindObjectsByType<PhaseWallTarget>(FindObjectsSortMode.None);
+        ScanTargets();
+        SetEquipped(false);
 
-        // Force the ability off on start
+        if (rescanOnSceneLoad)
+            SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
         SetEquipped(false);
     }
 
-    // This function is called by PlayerMovement2D when ability 4 is equipped/unequipped
-    public void SetEquipped(bool equipped)
+    void OnDisable() => SetEquipped(false);
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // If ability not unlocked, force equipped to false
-        if (!unlocked) equipped = false;
-        // If no targets, exit
-        if (targets == null) return;
+        ScanTargets();
 
-        // Loop through each target and set its state
-        for (int i = 0; i < targets.Length; i++)
-        {
-            // Skip null targets
-            if (targets[i] == null) continue;
-
-            // Set solid state based on equipped status
-            if (equipped)
-                targets[i].SetSolid(false);      // trigger ON
-            // If unequipped, restore original solidity state
-            else
-                targets[i].RestoreOriginal();    // back to original
-        }
+        if (isEquipped)
+            SetEquipped(true);
     }
 
-    // Ensure ability is turned off when object is disabled or destroyed
-    void OnDisable() => SetEquipped(false);
-    void OnDestroy() => SetEquipped(false);
+    [ContextMenu("Scan Targets Now")]
+    public void ScanTargets()
+    {
+        // Looking for phase target
+        var all = FindObjectsByType<PhaseWallTarget>(FindObjectsSortMode.None);
+
+        if (targetLayers.value == 0)
+        {
+            targets = all;
+            return;
+        }
+
+        System.Collections.Generic.List<PhaseWallTarget> filtered = new();
+        for (int i = 0; i < all.Length; i++)
+        {
+            var t = all[i];
+            if (t == null) continue;
+
+            int layerBit = 1 << t.gameObject.layer;
+            if ((targetLayers.value & layerBit) != 0)
+                filtered.Add(t);
+        }
+
+        targets = filtered.ToArray();
+    }
+
+    // Called by PlayerMovement2D when ability is equipped/unequipped
+    public void SetEquipped(bool equipped)
+    {
+        isEquipped = equipped;
+
+        if (!unlocked) equipped = false;
+        if (targets == null) return;
+
+        for (int i = 0; i < targets.Length; i++)
+        {
+            if (targets[i] == null) continue;
+
+            if (equipped)
+                targets[i].SetSolid(false);   // passable
+            else
+                targets[i].RestoreOriginal(); // back to original
+        }
+    }
 }
