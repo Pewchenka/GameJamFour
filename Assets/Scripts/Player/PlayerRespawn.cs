@@ -15,6 +15,9 @@ public class PlayerRespawn : MonoBehaviour
     private bool hasCheckpoint;
     private float invulnUntil;
 
+    public static System.Action OnPlayerRespawned;
+
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -45,5 +48,7 @@ public class PlayerRespawn : MonoBehaviour
         rb.angularVelocity = 0f;
 
         invulnUntil = Time.time + invulnTimeAfterRespawn;
+
+        OnPlayerRespawned?.Invoke();
     }
 }
