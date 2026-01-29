@@ -95,6 +95,8 @@ public class PlayerMovement2D : MonoBehaviour
     float coyoteTimer;
     float jumpBufferTimer;
 
+    bool externalMovementLock;
+
 
     // (On Start)
     // - Gets Rigidbody component
@@ -173,7 +175,9 @@ public class PlayerMovement2D : MonoBehaviour
     void FixedUpdate()
     {
         if (isDashing) return;
+        if (externalMovementLock) return;
         rb.linearVelocity = new Vector2(moveInput * CurrentMoveSpeed, rb.linearVelocity.y);
+
     }
 
     // Input Handlers
@@ -474,6 +478,14 @@ public class PlayerMovement2D : MonoBehaviour
             coyoteTimer = coyoteTime;
         else
             coyoteTimer -= Time.deltaTime;
+    }
+    public void SetExternalMovementLock(bool locked)
+    {
+        externalMovementLock = locked;
+    }
+    public float GetJumpForceForExternal()
+    {
+        return CurrentJumpForce;
     }
 
 }

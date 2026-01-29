@@ -10,6 +10,10 @@ public class PlayerSpawnPoint : MonoBehaviour
         // move player to spwanpoint
         player.transform.position = transform.position;
 
+        var player1 = FindObjectOfType<PlayerRespawn>();
+        if (player1 == null) return;
+
+        player1.SetCheckpoint(transform.position);
         // aplly masks
         if (GameManager.I != null)
             GameManager.I.ApplySaveToPlayer(player);

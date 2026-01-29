@@ -604,6 +604,9 @@ GameObject:
   - component: {fileID: 4132939583127621683}
   - component: {fileID: 2654071902326524582}
   - component: {fileID: 3605958674434528949}
+  - component: {fileID: 8665335273287742407}
+  - component: {fileID: 1789118472552343138}
+  - component: {fileID: 2630908820751865876}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -674,7 +677,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -903,6 +906,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ae49a79845233e41b209e4dc8cbfb9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerPersistenceSync
+--- !u!114 &8665335273287742407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2628287463124068850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd47b8e9902046d42a13112bb9a20a1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerRespawn
+  reloadSceneIfNoCheckpoint: 1
+  invulnTimeAfterRespawn: 0.2
+--- !u!114 &1789118472552343138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2628287463124068850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d5d17757e4596048b46b908b51b9463, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OneWayPlatformDrop
+  dropDuration: 0.25
+  oneWayPlatformMask:
+    serializedVersion: 2
+    m_Bits: 128
+  dropKey: 33
+--- !u!114 &2630908820751865876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2628287463124068850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da2e6024d9fb80e49ac7f73675dcfba2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LadderClimb
+  climbSpeed: 6
+  snapToLadderX: 0.15
 --- !u!1 &3496532179036816912
 GameObject:
   m_ObjectHideFlags: 0
