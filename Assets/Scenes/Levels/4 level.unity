@@ -3567,8 +3567,8 @@ Transform:
   m_GameObject: {fileID: 880733425}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 72.2, y: -12.33, z: 0}
-  m_LocalScale: {x: 6.7756658, y: 0.5171301, z: 1}
+  m_LocalPosition: {x: 71.0939, y: -12.85, z: 0}
+  m_LocalScale: {x: 8.987921, y: 0.5171301, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -9860,8 +9860,8 @@ Transform:
   m_GameObject: {fileID: 1680158494}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 44.28, y: -0.82, z: 0}
-  m_LocalScale: {x: 0.88640934, y: 4.32383, z: 1}
+  m_LocalPosition: {x: 44.28, y: 8.0244, z: 0}
+  m_LocalScale: {x: 0.88640934, y: 22.012619, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -12258,79 +12258,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &2077621749
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1356827824888869292, guid: 8af178443c1641f49999fff14a2d81ba, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 1.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1356827824888869292, guid: 8af178443c1641f49999fff14a2d81ba, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -2.06
-      objectReference: {fileID: 0}
-    - target: {fileID: 1356827824888869292, guid: 8af178443c1641f49999fff14a2d81ba, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1356827824888869292, guid: 8af178443c1641f49999fff14a2d81ba, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1356827824888869292, guid: 8af178443c1641f49999fff14a2d81ba, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1356827824888869292, guid: 8af178443c1641f49999fff14a2d81ba, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1356827824888869292, guid: 8af178443c1641f49999fff14a2d81ba, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1356827824888869292, guid: 8af178443c1641f49999fff14a2d81ba, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1356827824888869292, guid: 8af178443c1641f49999fff14a2d81ba, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1356827824888869292, guid: 8af178443c1641f49999fff14a2d81ba, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2324195924450951367, guid: 8af178443c1641f49999fff14a2d81ba, type: 3}
-      propertyPath: dashUnlocked
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2324195924450951367, guid: 8af178443c1641f49999fff14a2d81ba, type: 3}
-      propertyPath: doubleJumpUnlocked
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2324195924450951367, guid: 8af178443c1641f49999fff14a2d81ba, type: 3}
-      propertyPath: phaseWallsUnlocked
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2324195924450951367, guid: 8af178443c1641f49999fff14a2d81ba, type: 3}
-      propertyPath: revealPlatformsUnlocked
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2628287463124068850, guid: 8af178443c1641f49999fff14a2d81ba, type: 3}
-      propertyPath: m_Name
-      value: Player
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 8af178443c1641f49999fff14a2d81ba, type: 3}
 --- !u!1 &2125506064
 GameObject:
   m_ObjectHideFlags: 0
@@ -12362,7 +12289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f10919c0a1862ca4493ca445036c085b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Jumper
-  launchVelocityY: 22
+  launchVelocityY: 42
   resetVerticalVelocity: 1
   cooldown: 0.05
 --- !u!61 &2125506066
@@ -12964,7 +12891,6 @@ SceneRoots:
   - {fileID: 355011689}
   - {fileID: 1263377306}
   - {fileID: 2125506068}
-  - {fileID: 2077621749}
   - {fileID: 1804978869}
   - {fileID: 1348039555}
   - {fileID: 1998609445}
