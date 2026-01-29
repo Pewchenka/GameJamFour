@@ -226,7 +226,7 @@ public class PlayerMovement2D : MonoBehaviour
 
 
     // Switches current ability and applies/removes equipped ability states as needed
-    void SwitchAbility(AbilityMode newAbility)
+    public void SwitchAbility(AbilityMode newAbility)
     {
         if (currentAbility == newAbility) return;
 

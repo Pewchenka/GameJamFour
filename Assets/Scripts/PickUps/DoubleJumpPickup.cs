@@ -10,6 +10,9 @@ public class DoubleJumpPickup : MonoBehaviour
         if (player == null) return;
 
         player.doubleJumpUnlocked = true;
+
+        if (GameManager.I != null) GameManager.I.doubleJumpUnlocked = true;
+
         Destroy(gameObject);
     }
 }

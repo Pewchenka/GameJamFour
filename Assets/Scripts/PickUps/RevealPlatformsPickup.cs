@@ -14,6 +14,8 @@ public class RevealPlatformsPickup : MonoBehaviour
         player.revealPlatformsUnlocked = true;
         player.RefreshRevealUnlockedState();
 
+        if (GameManager.I != null) GameManager.I.revealPlatformsUnlocked = true;
+
         // Destroy the pickup object
         Destroy(gameObject);
     }

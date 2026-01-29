@@ -1,14 +1,16 @@
 using UnityEngine;
 
-public class PhaseWallsPickup : MonoBehaviour
+public class DashPickup : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D other)
     {
         var player = other.GetComponent<PlayerMovement2D>();
         if (player == null) return;
 
-        player.phaseWallsUnlocked = true;
-        player.RefreshPhaseWallsUnlockedState();
+        player.dashUnlocked = true;
+
+        if (GameManager.I != null)
+            GameManager.I.dashUnlocked = true;
 
         Destroy(gameObject);
     }
