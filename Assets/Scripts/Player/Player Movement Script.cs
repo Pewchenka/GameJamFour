@@ -169,6 +169,8 @@ public class PlayerMovement2D : MonoBehaviour
         UpdateJumpAssistTimers();
         Jump();
         HandleDash();
+
+
     }
 
     // Moves player based on input unless dashing

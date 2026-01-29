@@ -23,6 +23,13 @@ public class PlayerRespawn : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+            Respawn();
+    }
+
+
     public void SetCheckpoint(Vector3 pos)
     {
         checkpointPos = pos;

@@ -794,21 +794,21 @@ MonoBehaviour:
   dashSpeed: 20
   dashDuration: 0.15
   dashCooldown: 0.5
-  secondJumpStaminaMultiplier: 2
+  secondJumpStaminaMultiplier: 1.5
   dashMoveSpeedMultiplier: 1.25
   phaseMoveSpeedMultiplier: 0.75
   doubleJumpJumpForceMultiplier: 1.1
   maxStamina: 100
   dashStaminaCost: 20
-  staminaRegenPerSecond: 8
-  staminaRegenDelay: 1
+  staminaRegenPerSecond: 15
+  staminaRegenDelay: 0.5
   dashUnlocked: 0
   doubleJumpUnlocked: 0
   revealPlatformsUnlocked: 0
   phaseWallsUnlocked: 0
   currentAbility: 0
   canMoveLeft: 1
-  revealStaminaDrainPerSecond: 2
+  revealStaminaDrainPerSecond: 1
   disableRevealWhenOutOfStamina: 1
   phaseStaminaDrainPerSecond: 2
   disablePhaseWhenOutOfStamina: 1
