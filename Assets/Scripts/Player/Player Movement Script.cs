@@ -174,11 +174,17 @@ public class PlayerMovement2D : MonoBehaviour
     // Moves player based on input unless dashing
     void FixedUpdate()
     {
-        if (isDashing) return;
-        if (externalMovementLock) return;
-        rb.linearVelocity = new Vector2(moveInput * CurrentMoveSpeed, rb.linearVelocity.y);
+        if (isDashing)
+        {
+            rb.linearVelocity = new Vector2(moveInput * dashSpeed, rb.linearVelocity.y);
+            return;
+        }
 
+        if (externalMovementLock) return;
+
+        rb.linearVelocity = new Vector2(moveInput * CurrentMoveSpeed, rb.linearVelocity.y);
     }
+
 
     // Input Handlers
     public void OnMove(InputAction.CallbackContext context)
@@ -298,7 +304,7 @@ public class PlayerMovement2D : MonoBehaviour
         // Decides dash direction based on current input, defaults to right if no input
         float dashDirection = moveInput != 0 ? Mathf.Sign(moveInput) : 1f;
         // Sets velocity directly for dash and stops vertical movement
-        rb.linearVelocity = new Vector2(dashDirection * dashSpeed, 0f);
+        rb.linearVelocity = new Vector2(dashDirection * dashSpeed, rb.linearVelocity.y);
     }
 
     // Handles dash timing and ends dash when time is up
