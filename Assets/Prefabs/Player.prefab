@@ -599,6 +599,7 @@ GameObject:
   - component: {fileID: 2567149609368741256}
   - component: {fileID: 6236538917994653942}
   - component: {fileID: 5998479962345490164}
+  - component: {fileID: 5876831378552631324}
   - component: {fileID: 2324195924450951367}
   - component: {fileID: 3843928116668715384}
   - component: {fileID: 4132939583127621683}
@@ -762,6 +763,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &5876831378552631324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2628287463124068850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a6e80a7e2e7c3542a5c38c93c6f258e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DontDestroy
 --- !u!114 &2324195924450951367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -951,6 +964,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LadderClimb
   climbSpeed: 6
   snapToLadderX: 0.15
+  dismountPushX: 3
 --- !u!1 &3496532179036816912
 GameObject:
   m_ObjectHideFlags: 0
